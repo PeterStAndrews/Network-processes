@@ -25,7 +25,7 @@ import epyc
 import numpy as np
 import networkx
 
-class Sto( epyc.Experiment ):
+class STO( epyc.Experiment ):
     '''Stochastic simulation for heterogeneous mean field process over a network.
     Must specify the list of possible events and their effects on the system 
     via a subclass.'''
