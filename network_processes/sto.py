@@ -20,9 +20,6 @@
 
 import epyc
 import numpy as np
-
-import epyc
-import numpy as np
 import networkx
 
 class STO( epyc.Experiment ):
