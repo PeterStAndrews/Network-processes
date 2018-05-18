@@ -4,7 +4,6 @@
 
 `Network_processes` is a small library that implements analytical techniques to study dynamical processes on networks. Epidemic spreading processes on complex networks is an important area of current research. The dynamical properties of a disease can be captured using heterogeneous mean field theory (HMF), while the static, final-state properties are best portrayed through the use of generating functions (GFs). This library enables the study of an SIR process using both HMF and GFs. The HMF can be integrated either through RK4 using the `HMF` class, or through stochastic integration using the `STO` class.
 
-![alt text](https://raw.githubusercontent.com/PeterStAndrews/Network_processes/master/example.eps)
 
 ## Heterogeneous mean field theory
 
