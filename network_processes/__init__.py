@@ -29,6 +29,7 @@ library enables the study of an SIR process using both HMF and GFs.
 
 
 '''
+from .network import NETWORK
 from .hmf import HMF 
 from .gfs import GFs
 from .sto import STO
