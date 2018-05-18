@@ -33,3 +33,4 @@ from .network import NETWORK
 from .hmf import HMF 
 from .gfs import GFs
 from .sto import STO
+from .percolation import PERCOLATION
