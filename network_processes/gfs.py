@@ -19,11 +19,12 @@
 # along with `Network-processes`. If not, see <http://www.gnu.org/licenses/gpl.html>.
 
 
+from network_processes import *
 import networkx
 import epyc
 
 
-class GFs( epyc.Experiment ):
+class GFs( NETWORK ):
     '''Base for conducting epidemic analytical generating functions on
     networks. This class initialises the network and defines common 
     methods that will be used frequently. Sub-classes will define the 
@@ -43,66 +44,9 @@ class GFs( epyc.Experiment ):
     .. [2] Miller. (2007) 'Epidemic size and probability in populations 
        with heterogeneous infectivity and susceptibility'
     .. [3] Funk & Jansen (2010) `Interacting epidemics on overlay networks`
-    '''
+    '''     
+    T = 'T' # transmissibility 
     
-    N = 'N' # order of the network
-    AVERAGE_K = 'kmean' # average degree s
-    T = 'T'
-    
-    def configure( self, params ):
-        '''Create a "prototype" network and store it 
-        for later use.
-        :param params: the experimental parameters'''
-        epyc.Experiment.configure(self, params)
-        
-        # create the prototype network
-        N = params[self.N]
-        kmean = params[self.AVERAGE_K] + 0.0
-        g = networkx.erdos_renyi_graph(N, kmean / N)
-        
-        # remove degree-zero nodes
-        ks = g.degree()
-        k0s = [ i for i in ks.keys() if ks[i] == 0 ]
-        g.remove_nodes_from(k0s)
-        
-        # remove self-loops
-        g.remove_edges_from(g.selfloop_edges())
-        
-        # store it for later
-        self._prototype = g
-        
-    def setUp( self, params ):
-        '''Set up a working network for this run of the experiment.
-        This is useful when performing lab experiments.
-        :param params: the experimental parameters'''
-        epyc.Experiment.setUp(self, params)
-        self._network = self._prototype.copy()
-
-    def tearDown( self ):
-        '''Delete the current network.'''
-        epyc.Experiment.tearDown(self)
-        self._network = None
-
-    def degree_distribution( self, g ):
-        '''Computes the degree distribution of the network and stores
-        as a dictionary {degree: P_k}.
-        :param g: the network'''
-        Pk = {}
-        order = g.order()
-        inv_order = 1./order
-        for node in g.nodes_iter():
-            k = g.degree(node)
-            Pk[k] = Pk.get(k,0) + inv_order
-        return Pk
-    
-    def average_degree( self, Pk ):
-        '''Returns the average degree of the degree distribution Pk.
-        :param Pk: degree distribution'''
-        ave_k = 0
-        for k in Pk.keys():
-            ave_k += k*Pk[k]
-        return ave_k       
-        
     def return_arg( self, *arg ):
         '''Returns the argument `x` of a generating function.  
         :param arg: the argument of the function '''
@@ -119,6 +63,7 @@ class GFs( epyc.Experiment ):
         :param ave_k: average degree
         :param x: argument function'''
         G_0 = 0
+
         for k in Pk.keys():
             G_0 += Pk[k]*x(*args, **kwargs)**k
         return G_0
