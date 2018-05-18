@@ -22,6 +22,7 @@ from network_processes import *
 import networkx
 import epyc
 from scipy.integrate import ode
+import numpy as np
 
 class HMF( NETWORK ):
     '''This class will generate a network and from it obtain the 
