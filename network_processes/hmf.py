@@ -18,14 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with `Network-processes`. If not, see <http://www.gnu.org/licenses/gpl.html>.
 
-
+from network_processes import *
 import networkx
 import epyc
 from scipy.integrate import ode
 
-
-
-class HMF( epyc.Experiment ):
+class HMF( NETWORK ):
     '''This class will generate a network and from it obtain the 
     degree distribution. This will be used to integrate a mean 
     field SIR system according to the heterogeneous mean field 
@@ -35,63 +33,6 @@ class HMF( epyc.Experiment ):
     -------------
     .. [1] R. Pastor-Satorras and A. Vespignani. 'Epidemic spreading 
            in scale-free networks', Phys. Rev. Lett., vol. 86, pp. 3200-3203, 2001. '''
-    
-    N = 'N' # order of the network
-    AVERAGE_K = 'kmean' # average degree s
-    
-    def configure( self, params ):
-        '''Create a "prototype" network and store it 
-        for later use.
-        :param params: the experimental parameters'''
-        epyc.Experiment.configure(self, params)
-        
-        # create the prototype network
-        N = params[self.N]
-        kmean = params[self.AVERAGE_K] + 0.0
-        g = networkx.erdos_renyi_graph(N, kmean / N)
-        
-        # remove degree-zero nodes
-        ks = g.degree()
-        k0s = [ i for i in ks.keys() if ks[i] == 0 ]
-        g.remove_nodes_from(k0s)
-        
-        # remove self-loops
-        g.remove_edges_from(g.selfloop_edges())
-        
-        # store it for later
-        self._prototype = g
-        
-    def setUp( self, params ):
-        '''Set up a working network for this run of the experiment.
-        This is useful when performing lab experiments.
-        :param params: the experimental parameters'''
-        epyc.Experiment.setUp(self, params)
-        self._network = self._prototype.copy()
-
-    def tearDown( self ):
-        '''Delete the current network.'''
-        epyc.Experiment.tearDown(self)
-        self._network = None
-        
-    def degree_distribution( self, g ):
-        '''Computes the degree distribution of the network and stores
-        as a dictionary {degree: P_k}.
-        :param g: the network'''
-        Pk = {}
-        order = g.order()
-        inv_order = 1./order
-        for node in g.nodes_iter():
-            k = g.degree(node)
-            Pk[k] = Pk.get(k,0) + inv_order
-        return Pk
-
-    def average_degree( self, Pk ):
-        '''Returns the average degree of the degree distribution Pk.
-        :param Pk: degree distribution'''
-        ave_k = 0
-        for k in Pk.keys():
-            ave_k += k*Pk[k]
-        return ave_k
 
     def do( self, params ):
         '''runs the experiment.'''
