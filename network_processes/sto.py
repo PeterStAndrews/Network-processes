@@ -23,9 +23,10 @@ import numpy as np
 import networkx
 
 class STO( epyc.Experiment ):
-    '''Stochastic simulation for heterogeneous mean field process over a network.
+    '''Stochastic simulation for a mean field system over a network.
     Must specify the list of possible events and their effects on the system 
-    via a subclass.'''
+    via a subclass. The algorithm draws an event and a time for it to occur
+    before it updates the states. It does this for each degree independently.'''
     
     MAX_TIME = 5000
     
@@ -87,57 +88,14 @@ class STO( epyc.Experiment ):
         for k in Pk.keys():
             ave_k += k*Pk[k]
         return ave_k
-    
-    def degree_composition( self, g ):
-        '''Populates N[k] dict containing number of nodes 
-        of degree k.
-        :param g: the network
-        :returns dict: degree composition'''
-        Nk = {}
-        for node in g.nodes_iter():
-            k = g.degree(node)
-            Nk[k] = Nk.get(k,0) + 1
-        return Nk
-    
-    def initialisation( self, params, N ):
-        '''Returns array of inititalised model. 
-        :param params: the experimental parameters
-        :params N: number of nodes
-        :returns array: initial states'''
-        raise NotImplementedError 
-       
-    def after( self, states, rc):
-        '''Function to be run after the simulation
-        records the final populations at equilibrium or when 
-        no events are left as a dict. 
         
-        :param states: the final states
-        :param rc: results dict'''
-        raise NotImplementedError 
-        
-    def computeRates( self, params, states, k, ave_k, Pk ):
-        '''Computes the event propensities and appends the event list.
-        
-        :param params: the experimental parameters
-        :param states: the current state, array
-        :param k: the degree
-        :param ave_k: average degree
-        :param Pk: degree distribution
-        :returns list: event list'''
-        raise NotImplementedError 
-        
-    def transition_matrix( self ): 
-        '''Returns transition matrix between states as array.
-        :returns array: transition matrix'''
-        raise NotImplementedError 
-        
-    def draw( self, t, params, states, k, ave_k, Pk ):
+    def draw( self, t, params, state, k, ave_k, Pk ):
         '''A single step of the algorithm, draws an event index and its time.
         Returns event rate index e and time t pair.
         
         :param t: current time
         :param params: experimental parameters
-        :param states: current state
+        :param state: current state
         :param k: the degree
         :param ave_k: average degree
         :param Pk: degree distribution
@@ -146,7 +104,7 @@ class STO( epyc.Experiment ):
         e = None
         
         # compute event rates
-        e_list = self.computeRates(params, states, k, ave_k, Pk)
+        e_list = self.computeRates(params, state, k, ave_k, Pk)
     
         # sum event rates
         sum_e = sum(e_list)
@@ -197,7 +155,6 @@ class STO( epyc.Experiment ):
         
         # grab a copy of the network & compute Nk
         g = self._network
-        Nk = self.degree_composition(g)
         
         # find the degree distribution
         Pk = self.degree_distribution(g)
@@ -208,28 +165,115 @@ class STO( epyc.Experiment ):
         # define the transition matrix
         update_matrix = self.transition_matrix()
         
-        for k in Nk.keys():
+        # initialise the macro system
+        states = self.initialisation(params, g)
+        
+        rc['y0'] = states
+        
+        for k in states.keys():
             
             # initialise the kth system
-            states = self.initialisation(params, Nk[k])
+            state = states[k]
             
             while not self.at_equilibrium(t):
                 
                 # choose an event e and its time t
-                e, t = self.draw(t, params, states, k, ave_k, Pk)
+                e, t = self.draw(t, params, state, k, ave_k, Pk)
                 
                 # check if any events left
                 if e is None:
                     break;
                 
                 # update model 
-                states += update_matrix[e]
+                state += update_matrix[e]
                  
             # record final kth states
-            rec[k] = states
+            rec[k] = state
         
         # sum over the k-systems to macro values
-        rc['final_states'] = map(np.sum, zip(*rec.values()))
-        rc['Nk'] = Nk
+        rc['final_state'] = map(np.sum, zip(*rec.values()))
         
         return rc
+    
+    def initialisation( self, params, g ):
+        '''Inititalisation of populations in model. The nodes 
+        in the network are seeded with probability `pInfected`, 
+        their degree is stored and the number of infecteds of 
+        that degree is recorded. The initial state matrix is then 
+        created and returned as a dictionary.
+        
+        :param params: the experimental parameters
+        :param g: the network
+        :returns dict of arrays: states'''
+        pInfected = params['pInfected']
+        Ik = {} # number of infected seed nodes of degree k
+        Nk = {} # number of nodes of degree k
+        
+        for node in g.nodes_iter():
+            k = g.degree(node)
+            Nk[k] = Nk.get(k,0) + 1
+            if pInfected > np.random.random_sample():
+                Ik[k] = Ik.get(k,0) + 1
+    
+        # create initial state dict
+        y0 = {}
+        for k in Nk.keys():
+            if k in Ik:
+                y0[k] = np.array([Nk[k] - Ik[k], Ik[k], 0], dtype=int)
+            else:
+                # force it?
+                Nk[k] -= 1
+                Ik[k] = 1
+                y0[k] = np.array([Nk[k], Ik[k], 0], dtype=int)
+                
+                # don't force it!
+                # y0[k] = np.array([Nk[k], 0.0, 0.0]) 
+                
+        return y0
+       
+    def transition_matrix( self ): 
+        '''Returns transition matrix between states. In this 
+        case, we have: T = [[infection event],[recovery event]].
+        :returns array: transition matrix'''
+        return np.array([[-1, 1, 0],
+                         [ 0, -1, 1] ], dtype=np.int)
+        
+    def computeRates( self, params, state, k, ave_k, Pk ):
+        '''Computes the event rates and appends the event list.
+        
+        :param params: the experimental parameters
+        :param state: the current state, array
+        :param k: the degree
+        :param ave_k: average degree
+        :param Pk: degree distribution
+        
+        :returns list: event list
+        '''
+        # unpack the parameters
+        pInfect = params['pInfect']
+        pRecover = params['pRecover']
+        
+        # unpack the states
+        S, I, R = state
+        
+        # compute total number of nodes
+        N = S + I + R
+        
+        def theta( ave_k, Pk, I_k ):
+            '''Function makes theta(t) for a non-correlated network.
+            
+            :param ave_k: average degree
+            :param Pk: degree distribution
+            :param i: I_k value
+            :returns float: theta(t)'''
+            summation = 0
+            for k in Pk.keys():
+                summation += (k - 1) * Pk[k] * I_k
+            return ( summation + 0.0 ) / ave_k 
+        
+        # create the events
+        e1 = (k * pInfect * S * theta(ave_k, Pk, I) + 0.0) / N
+        e2 = pRecover * I
+        
+        return [e1, e2] 
+    
