@@ -2,12 +2,14 @@
 
 ## Overview 
 
-`Network_processes` is a small library that implements analytical techniques to study dynamical processes on networks. Epidemic spreading processes on complex networks is an important area of current research. The dynamical properties of a disease can be captured using heterogeneous mean field theory (HMF), while the static, final-state properties are best portrayed through the use of generating functions (GFs). This library enables the study of an SIR process using both HMF and GFs. The HMF can be integrated either through RK4 using the `HMF` class, or through stochastic integration using the `STO` class.
+`Network_processes` is a small library that implements analytical techniques to study dynamical processes on networks. Epidemic spreading processes on complex networks is an important area of current research. In particular the SIR process is commonly used due to its non-dynamical absorbing state. The dynamical properties of a disease can be captured using degree based heterogeneous mean field theory (DBHMF), while the static, final-state properties are best portrayed through the use of generating functions (GFs). This library enables the study of an SIR process using both DBHMF and GFs. The DBHMF can be integrated either through RK4 using the `HMF` class, or through stochastic integration using the `STO` class. 
+
+There is an example of how to run these simulations and their outputs are plotted for comparison. By considering the source code, it is straightforward to modify the underlying model to simulate alternative or even coupled processes. 
 
 
-## Heterogeneous mean field theory
+## Degree based heterogeneous mean field theory
 
-HMF is based on the degree block approximation that partitions nodes according to their degree as well as their state. For a given network, a dynamical process is simulated by a system of ODEs at each degree k in the degree distribution. The integration of each system can be performed either through RK4 or stochastic integration. To access an RK4 integrator for the SIR process, use the `HMF` class. The class `STO` performs Gillespie stochastic simulation for the SIR process. 
+DBHMF is based on the degree block approximation that partitions nodes according to their degree as well as their state. For a given network, a dynamical process is simulated by a system of ODEs for each degree k in the degree distribution. The integration of each system can be performed either through RK4 or stochastic integration. To access an RK4 integrator for the SIR process, use the `HMF` class. The class `STO` performs Gillespie stochastic simulation. 
 
 ## Generating functions
 
