@@ -3,21 +3,21 @@
 #
 # Copyright (C) 2017 Peter Mann
 # 
-# This file is part of `Network_processes`, for epidemic network 
+# This file is part of `NetworkProcesses`, for epidemic network 
 # analytical results using Python.
 #
-# `Network_processes` is free software: you can redistribute it and/or modify
+# `NetworkProcesses` is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# `Network_processes` is distributed in the hope that it will be useful,
+# `NetworkProcesses` is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with `Network_processes`. If not, see <http://www.gnu.org/licenses/gpl.html>.
+# along with `NetworkProcesses`. If not, see <http://www.gnu.org/licenses/gpl.html>.
 
 import networkx
 import epyc
@@ -26,7 +26,7 @@ import epyc
 class NETWORK( epyc.Experiment ):
     '''The base class for generating a network using networkx and
     defining basic analysis tools for later use. Each method will 
-    subclass this to model the desired process.'''
+    subclass this to model the desired process. '''
     
     N = 'N' # order of the network
     AVERAGE_K = 'kmean' # average degree s
