@@ -4,7 +4,7 @@
 
 `NetworkProcesses` is a small library that implements analytical techniques to study dynamical processes on networks. Epidemic spreading processes on complex networks is an important area of current research. In particular the SIR process is commonly used due to its non-dynamical absorbing state. The dynamical properties of a disease can be captured using degree based heterogeneous mean field theory (DBHMF), while the static, final-state properties are best portrayed through the use of generating functions (GFs). This library enables the study of an SIR process using both DBHMF and GFs. The DBHMF can be integrated either through RK4 using the `HMF` class, or through stochastic integration using the `STO` class. 
 
-There is an example of how to run these simulations and their outputs are plotted for comparison. By considering the source code, it is straightforward to modify the underlying model to simulate alternative or even coupled processes. 
+Currently, each technique is set up for an SIR process; however, it is stated *how* to modify this to create your own type of  process. In fact, one of the main aims of this library is that it is simple to use! There is an example of how to run the simulations as they are, and their outputs are plotted for comparison. By considering the source code, it should be straightforward to modify the underlying model to simulate alternative or even coupled processes. 
 
 
 ## Degree based heterogeneous mean field theory
