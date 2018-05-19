@@ -1,22 +1,22 @@
-# Heterogeneous mean field theory base class
+# Degree based heterogeneous mean field theory RK4 integration
 #
 # Copyright (C) 2017 Peter Mann
 # 
-# This file is part of `Network_processes`, for epidemic network 
+# This file is part of `NetworkProcesses`, for epidemic network 
 # analytical results using Python.
 #
-# `Network_processes` is free software: you can redistribute it and/or modify
+# `NetworkProcesses` is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# `Network_processes` is distributed in the hope that it will be useful,
+# `NetworkProcesses` is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with `Network_processes`. If not, see <http://www.gnu.org/licenses/gpl.html>.
+# along with `NetworkProcesses`. If not, see <http://www.gnu.org/licenses/gpl.html>.
 
 from network_processes import *
 import networkx
@@ -25,10 +25,14 @@ from scipy.integrate import ode
 import numpy as np
 
 class HMF( NETWORK ):
-    '''This class will generate a network and from it obtain the 
-    degree distribution. This will be used to integrate a mean 
-    field SIR system according to the heterogeneous mean field 
-    theory.
+    '''This class will integrate a degree based mean field system using an RK4
+    integration scheme. The network is created in the base class `NETWORK` The user 
+    should modify `model`, `initialisation` and `param_vector` to tailor this to their needs. 
+    
+    :func model: returns the updated differential equations dx/dt as a np.array. 
+    :func initialisation: returns the initial state {X_0} for the kth model as an
+    an np.array. 
+    :func param_vector: returns the parameters required to update the model using `model`.
     
     :References:
     -------------
