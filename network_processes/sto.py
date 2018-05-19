@@ -2,21 +2,21 @@
 #
 # Copyright (C) 2017 Peter Mann
 # 
-# This file is part of `Network_processes`, for epidemic network 
+# This file is part of `NetworkProcesses`, for epidemic network 
 # analytical results using Python.
 #
-# `Network_processes` is free software: you can redistribute it and/or modify
+# `NetworkProcesses` is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# `Network_processes` is distributed in the hope that it will be useful,
+# `NetworkProcesses` is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with `Network_processes`. If not, see <http://www.gnu.org/licenses/gpl.html>.
+# along with `NetworkProcesses`. If not, see <http://www.gnu.org/licenses/gpl.html>.
 
 from network_processes import *
 import epyc
@@ -24,10 +24,21 @@ import numpy as np
 import networkx
 
 class STO( NETWORK ):
-    '''Stochastic simulation for a mean field system over a network.
+    '''Stochastic simulation for a degree based mean field system over a network.
     Must specify the list of possible events and their effects on the system 
     via a subclass. The algorithm draws an event and a time for it to occur
-    before it updates the states. It does this for each degree independently.'''
+    before it updates the states. It does this for each degree independently.
+    To modify the experiment the user should overide the following:
+    
+    :func initialisation: returns an array of the initial states for the 
+    kth system.
+    
+    :func transition_matrix: returns the transition matrix for each event type
+    as an np.array.
+    
+    :func compute_rates: returns an array of event propensities for the current state
+    of the process. Event rates can be zero, in fact the experiment has equilibrated 
+    when all events have zero propensity.'''
     
     MAX_TIME = 5000
 
@@ -46,7 +57,7 @@ class STO( NETWORK ):
         e = None
         
         # compute event rates
-        e_list = self.computeRates(params, state, k, ave_k, Pk)
+        e_list = self.compute_rates(params, state, k, ave_k, Pk)
     
         # sum event rates
         sum_e = sum(e_list)
@@ -180,7 +191,7 @@ class STO( NETWORK ):
         return np.array([[-1, 1, 0],
                          [ 0, -1, 1] ], dtype=np.int)
         
-    def computeRates( self, params, state, k, ave_k, Pk ):
+    def compute_rates( self, params, state, k, ave_k, Pk ):
         '''Computes the event rates and appends the event list.
         
         :param params: the experimental parameters
