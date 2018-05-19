@@ -2,21 +2,21 @@
 #
 # Copyright (C) 2017 Peter Mann
 # 
-# This file is part of `Network_processes`, for epidemic network 
+# This file is part of `NetworkProcesses`, for epidemic network 
 # analytical results using Python.
 #
-# `Network_processes` is free software: you can redistribute it and/or modify
+# `NetworkProcesses` is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# `Network_processes` is distributed in the hope that it will be useful,
+# `NetworkProcesses` is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with `Network_processes`. If not, see <http://www.gnu.org/licenses/gpl.html>.
+# along with `NetworkProcesses`. If not, see <http://www.gnu.org/licenses/gpl.html>.
 
 
 from network_processes import *
@@ -26,17 +26,11 @@ import epyc
 
 class GFs( NETWORK ):
     '''Base for conducting epidemic analytical generating functions on
-    networks. This class initialises the network and defines common 
-    methods that will be used frequently. Sub-classes will define the 
-    details of the experimental sections and will overide `do` in all
-    but the basic scenarios.
-    
-    This class is built over an epyc.Experiment base class. In the 
-    `configure` function we create a network of size `N` and average
-    degree `k_average`. The next section includes methods for the 
-    epyc base and for the evaluation of network properties.
-    The `do()` function is the actual experiment to be run, this section
-    is customised to the needs of the experimenter.
+    networks. This class defines common methods that will be used frequently. 
+    Sub-classes will define the details of the experimental sections and will 
+    overide `do` in all but the basic scenarios. Currently, the generating 
+    functions are designed for the configuration model; however, it is clear 
+    how to customise these when required.
     
     :References:
     -------------
