@@ -41,6 +41,9 @@ class GFs( NETWORK ):
     '''     
     T = 'T' # transmissibility 
     
+    def __init__(self):
+        super(GFs, self).__init__()
+        
     def return_arg( self, *arg ):
         '''Returns the argument `x` of a generating function.  
         :param arg: the argument of the function '''
