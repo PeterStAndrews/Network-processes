@@ -31,6 +31,9 @@ class NETWORK( epyc.Experiment ):
     N = 'N' # order of the network
     AVERAGE_K = 'kmean' # average degree s
 
+    def __init__(self):
+        super(NETWORK, self).__init__()
+        
     def configure( self, params ):
         '''Create a "prototype" network and store it 
         for later use.
