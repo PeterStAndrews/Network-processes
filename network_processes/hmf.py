@@ -39,6 +39,9 @@ class HMF( NETWORK ):
     .. [1] R. Pastor-Satorras and A. Vespignani. 'Epidemic spreading 
            in scale-free networks', Phys. Rev. Lett., vol. 86, pp. 3200-3203, 2001. '''
     
+    def __init__(self):
+        super(HMF, self).__init__()
+        
     def model( self, t, y, pInfect, pRecover, k, ave_k, Pk ):
         '''Return functions for changes in states for the kth model.
         :param pInfect: rate of infection
