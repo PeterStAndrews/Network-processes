@@ -42,6 +42,9 @@ class STO( NETWORK ):
     
     MAX_TIME = 5000
 
+    def __init__(self):
+        super(STO, self).__init__()
+        
     def draw( self, t, params, state, k, ave_k, Pk ):
         '''A single step of the algorithm, draws an event index and its time.
         Returns event rate index e and time t pair.
