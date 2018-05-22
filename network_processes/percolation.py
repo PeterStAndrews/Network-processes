@@ -38,6 +38,9 @@ class PERCOLATION( NETWORK ):
     
     T = 'T'
     
+    def __init__(self):
+        super(PERCOLATION, self).__init__()
+        
     def do( self, params ):
         '''Here we perform a percolation experiment on the network g.
         We remove nodes with a probability (1 - T) and return the 
