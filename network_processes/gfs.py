@@ -49,7 +49,7 @@ class GFs( NETWORK ):
         :param arg: the argument of the function '''
         return arg[0]
     
-    def G_0_generating_function( self, Pk, ave_k, x, *args, **kwargs ):
+    def G_0_generating_function( self, Pk, ave_k, x ):
         r'''Computes a `G_0` generating function as 
         
          .. math::
@@ -58,14 +58,14 @@ class GFs( NETWORK ):
         
         :param Pk: degree distribution
         :param ave_k: average degree
-        :param x: argument function'''
+        :param x: function argument'''
         G_0 = 0
 
         for k in Pk.keys():
-            G_0 += Pk[k]*x(*args, **kwargs)**k
+            G_0 += Pk[k]*x**k
         return G_0
        
-    def G_1_generating_function( self, Pk, ave_k, x, *args, **kwargs ):
+    def G_1_generating_function( self, Pk, ave_k, x ):
         r'''Computes the `G_1` generating function as
         
          .. math::
@@ -79,10 +79,10 @@ class GFs( NETWORK ):
         k_min = min(Pk, key=int)
         for k in Pk.keys():
             if k > k_min:
-                summation += k*Pk[k]*x(*args, **kwargs)**(k-1)
+                summation += k*Pk[k]*x**(k-1)
         return (summation + 0.0)/ave_k
  
-    def G_1_derivative_generating_function( self, Pk, ave_k, x, *args, **kwargs ):
+    def G_1_derivative_generating_function( self, Pk, ave_k, x ):
         r'''Computes the `G'_1` generating function derivative as
         
          .. math::
@@ -96,7 +96,7 @@ class GFs( NETWORK ):
         k_min = min(Pk, key=int)
         for k in Pk.keys():
             if k > (k_min + 1):
-                summation += (k-1)*k*Pk[k]*x(*args, **kwargs)**(k-2)
+                summation += (k-1)*k*Pk[k]*x**(k-2)
         return (summation + 0.0)/ave_k
     
     def super_critical_GC( self, T, Pk, ave_k, u ):
@@ -123,7 +123,7 @@ class GFs( NETWORK ):
         z = 1
         for i in range(1000):
             z = 1 - z*T
-            z = 1 - self.G_1_generating_function(Pk, ave_k, self.return_arg, z)
+            z = 1 - self.G_1_generating_function(Pk, ave_k, z)
         return z
     
     def self_consistent( self, T, Pk, ave_k ):
