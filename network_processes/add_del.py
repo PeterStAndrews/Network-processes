@@ -72,9 +72,7 @@ class addition_deletion(NETWORK):
         :References:
         -------------
         .. [1] C. Moore, G. Ghoshal, and M. E. J. Newman, 
-           “Exact solutions for models of evolving networks 
-           with addition and deletion of nodes,” Phys. Rev. E, 
-           vol. 74, p. 036121, Sep 2006.
+           Phys. Rev. E, vol. 74, p. 036121, Sep 2006.
         '''
         # then reshape it to the original dimension (k_max*n)
         p = p.reshape(k_max, n) 
