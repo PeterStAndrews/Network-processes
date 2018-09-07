@@ -25,7 +25,7 @@ from .test_network import *
 networkSuite = unittest.TestLoader().loadTestsFromTestCase(NetworkTest)
 
 # add tests to the test suite
-suite = unittest.TestSuite([ experimentsSuite ] )
+suite = unittest.TestSuite([ networkSuite ] )
 
 # run the tests
 if __name__ == '__main__':
