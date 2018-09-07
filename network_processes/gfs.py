@@ -44,11 +44,6 @@ class GFs( NETWORK ):
     def __init__(self):
         super(GFs, self).__init__()
         
-    def return_arg( self, *arg ):
-        '''Returns the argument `x` of a generating function.  
-        :param arg: the argument of the function '''
-        return arg[0]
-    
     def G_0_generating_function( self, Pk, ave_k, x ):
         r'''Computes a `G_0` generating function as 
         
@@ -58,13 +53,12 @@ class GFs( NETWORK ):
         
         :param Pk: degree distribution
         :param ave_k: average degree
-        :param x: function argument'''
+        :param x: argument function'''
         G_0 = 0
-
         for k in Pk.keys():
             G_0 += Pk[k]*x**k
         return G_0
-       
+    
     def G_1_generating_function( self, Pk, ave_k, x ):
         r'''Computes the `G_1` generating function as
         
@@ -81,92 +75,24 @@ class GFs( NETWORK ):
             if k > k_min:
                 summation += k*Pk[k]*x**(k-1)
         return (summation + 0.0)/ave_k
- 
-    def G_1_derivative_generating_function( self, Pk, ave_k, x ):
-        r'''Computes the `G'_1` generating function derivative as
-        
-         .. math::
-         
-             \frac{1}{\langle k \rangle}\sum_{k=0}^\infty k(k-1)(k+1)p_{k+1}(x)^{k-2}
-        
-        :param Pk: degree distribution
-        :param ave_k: average degree
-        :param x: argument function'''
-        summation = 0
-        k_min = min(Pk, key=int)
-        for k in Pk.keys():
-            if k > (k_min + 1):
-                summation += (k-1)*k*Pk[k]*x**(k-2)
-        return (summation + 0.0)/ave_k
     
-    def super_critical_GC( self, T, Pk, ave_k, u ):
-        r'''Computes the fraction (`S_1`) of the network occupied by the 
-        giant component (`GC`) of disease 1 in the super-critical regime. 
-        
-        :param T: transmissibility 
-        :param Pk: degree distribution
-        :param ave_k: average degree
-        :param u: probability that a neighbour fails to transmit ''' 
-        x = 1 - T + T*u
-        S_1 = 1 - self.G_0_generating_function(Pk, ave_k, self.return_arg, x)
-        return S_1
-    
-    def make_z( self, T, ave_k, Pk ):
-        r'''Computes `z` the probability that a neighbour infected a node as
-        
-        .. math::
-            z = 1 - G_1(1 - zT)
-        
-        :param T: Transmissibility 
-        :param ave_k: average degree
-        :param Pk: degree distribution'''
-        z = 1
-        for i in range(1000):
-            z = 1 - z*T
-            z = 1 - self.G_1_generating_function(Pk, ave_k, z)
-        return z
-    
-    def self_consistent( self, T, Pk, ave_k ):
-        '''Solves a self consistent equation using the G_1
-        generating function as `u = G_1(u;T). Modifications 
-        can be made where required.
-        
-        :param T: Transmissibility 
-        :param Pk: degree distribution
-        :param ave_k: average degree'''
-        u = 0
-        for i in range(1000):
-            u = 1 - T + T*u
-            u = self.G_1_generating_function(Pk, ave_k, self.return_arg, u)
-        return u
-        
     def do( self, params ):
-        '''Runs the experiment. In this case we have an SIR model
-        where a disease spreads over the network. 
-        :param params: the experimental parameters'''
-        kmean = params[self.AVERAGE_K]
-        N = params[self.N]
-        T = params[self.T]
+        '''Runs the experiment.  '''
+        T1 = params[self.T]
         
         rc = dict()
-
-        # create network
         g = self._network
-
-        # find degree distribution
         Pk = self.degree_distribution(g)
-
-        # find the average degree
         ave_k = self.average_degree(Pk)
         
-        # compute final size of epidemic
-        u = self.self_consistent(T, Pk, ave_k)     
-        S_1 = self.super_critical_GC(T, Pk, ave_k, u)  
-        
+        # first disease 
+        u = 0.5
+        for i in range(0,2000):
+            u = 1 - self.G_1_generating_function(Pk, ave_k, 1-u*T1)
+        S1 = 1 - self.G_0_generating_function(Pk, ave_k, 1-u*T1)
+    
+        rc['S1'] = S1
         rc['Pk'] = Pk 
         rc['ave_k'] = ave_k
-        
-        rc['u'] = u
-        rc['S_1'] = S_1
         
         return rc
