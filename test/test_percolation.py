@@ -22,15 +22,30 @@ from network_processes import *
 import unittest
 
 class PercolationTest(unittest.TestCase):
-	'''Tests for `PERCOLATION` class in `percolation.py`. ```
+	'''Tests for `PERCOLATION` class in `percolation.py` using an
+	epyc lab simulation environment. '''
 
+	def setUp( self ):
+		'''Set up the parameters.'''
+		# set lab test parameters
+		self._lab = epyc.Lab()
 
-	
+		self._lab[PERCOLATION.T] = [0.6, 0.9]
+		self._lab[PERCOLATION.N] = 5000
+		self._lab[PERCOLATION.AVERAGE_K] = 5
 
+		# repetitions at each point in the parameter space
+		self._repetitions = 1
 
-
-
-
-
-
+	def testEpidemic( self ):
+		''''Test an epidemic occurs.'''
+		# instance class
+		e = PERCOLATION()
+		# perform the experiments
+		self._lab.runExperiment(epyc.RepeatedExperiment(e, self._repetitions))
+		# extract the results
+		rc = (self._lab.results())[0]
+		# perform tests
+		self.assertTrue(rc[epyc.Experiment.RESULTS]['occupied_fraction'] > 0)
+		self.assertEqual(rc[epyc.Experiment.RESULTS]['occupied_fraction'] + (1 - ['occupied_fraction'])*self._lab[PERCOLATION.N], self._network.order())
 
