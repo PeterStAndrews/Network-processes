@@ -20,16 +20,32 @@
 
 import unittest
 from .test_network import *
+from .test_percolation import *
+from .test_gfs import *
+from .test_sto import *
+from .test_hmf import *
+from .test_add_del import *
+
 
 # initialise the tests
 networkSuite = unittest.TestLoader().loadTestsFromTestCase(NetworkTest)
+gfsSuite = unittest.TestLoader().loadTestsFromTestCase(GFsTest)
+percolationSuite = unittest.TestLoader().loadTestsFromTestCase(PercolationTest)
+stoSuite = unittest.TestLoader().loadTestsFromTestCase(STOTest)
+hmfSuite = unittest.TestLoader().loadTestsFromTestCase(HMFTest)
+addition_deletionSuite = unittest.TestLoader().loadTestsFromTestCase(addition_deletionTest)
 
 # add tests to the test suite
-suite = unittest.TestSuite([ networkSuite ] )
+suite = unittest.TestSuite([ networkSuite,
+							 gfsSuite,
+							 percolationSuite,
+							 stoSuite,
+							 hmfSuite,
+							 addition_deletionSuite ] )
 
 # run the tests
 if __name__ == '__main__':
-    unittest.TextTestRunner(verbosity=3).run(suite)
+    unittest.TextTestRunner(verbosity=2).run(suite)
 
 
 
