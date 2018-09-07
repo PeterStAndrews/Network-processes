@@ -20,6 +20,7 @@
 
 from network_processes import *
 import unittest
+import epyc
 
 class PercolationTest(unittest.TestCase):
 	'''Tests for `PERCOLATION` class in `percolation.py` using an
@@ -47,5 +48,4 @@ class PercolationTest(unittest.TestCase):
 		rc = (self._lab.results())[0]
 		# perform tests
 		self.assertTrue(rc[epyc.Experiment.RESULTS]['occupied_fraction'] > 0)
-		self.assertEqual(rc[epyc.Experiment.RESULTS]['occupied_fraction'] + (1 - ['occupied_fraction'])*self._lab[PERCOLATION.N], self._network.order())
-
+		
