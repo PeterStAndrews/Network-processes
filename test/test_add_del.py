@@ -22,15 +22,35 @@ from network_processes import *
 import unittest
 
 class addition_deletionTest(unittest.TestCase):
-	'''Tests for `addition_deletion` class in `add_del.py`. ```
-
-
-	
-
-
-
-
-
-
-
+    '''Tests for `addition_deletion` class in `add_del.py` using an
+    epyc lab simulation environment.'''
+    
+    def setUp( self ):
+        '''Set up the parameters.'''
+        # set lab test parameters
+        self._lab = epyc.Lab()
+        
+        # initialise the experimental parameters
+        self._lab['time'] = range(0,1000)  # integration time
+        self._lab['N'] = 5000              # network size
+        self._lab['k_max'] = 30            # maximum degree
+        self._lab['kmean'] = 10            # mean degree
+        self._lab['class_dimension'] = 1   # number of equations per class
+        
+        self._lab['poisson'] = False       # flag for Poisson distribution
+        self._lab['delta'] = True          # flag for delta function
+        self._repetitions = 1              # repetitions at each point in the parameter space
+    
+    def testDegreeDist( self ):
+        ''''Test an non-zero degree distribution for 
+        steady-state network dynamics.'''
+        # instance class
+        e = addition_deletion()
+        # perform the experiments
+        self._lab.runExperiment(epyc.RepeatedExperiment(e, self._repetitions))
+        # extract the results
+        rc = (self._lab.results())[0]
+        
+        # perform tests
+        self.assertTrue(rc[epyc.Experiment.RESULTS]['sol'] > 0)
 
