@@ -20,10 +20,10 @@
 
 from setuptools import setup
 
-with open('README.rst') as f:
+with open('README.md') as f:
     longDescription = f.read()
 
-setup(name = 'NetworkProcesses',
+setup(name = 'network_processes',
       version = '0.1.0',
       description = 'Network process simulation in Python',
       long_description = longDescription,
@@ -31,13 +31,15 @@ setup(name = 'NetworkProcesses',
       author = 'Peter Mann',
       author_email = 'pm78@st-andrews.ac.uk',
       license = 'License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)',
-      classifiers = [ 'Development Status :: Beta',
+      classifiers = [ 'Development Status  :: 4 - Beta',
                       'Intended Audience :: Science/Research',
                       'Intended Audience :: Developers',
                       'Programming Language :: Python :: 2.7',
                       'Topic :: Scientific/Engineering' ],
-      packages = [ 'NetworkProcesses' ],
+      packages = [ 'network_processes' ],
       zip_safe = True,
       install_requires = [ "numpy", "networkx", "epyc", "scipy"])
+
+
 
 
