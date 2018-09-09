@@ -23,6 +23,12 @@ import unittest
 
 class HMFTest(unittest.TestCase):
 	'''Tests for `HMF` class in `hmf.py`. ```
+	
+	def setUp( self ):
+		return pass 
+	
+	testhmf( self ):
+		raise Exception('Not implemented yet! (test hmf)')
 
 
 	
