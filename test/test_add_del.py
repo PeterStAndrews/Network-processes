@@ -31,7 +31,7 @@ class addition_deletionTest(unittest.TestCase):
         self._lab = epyc.Lab()
         
         # initialise the experimental parameters
-        self._lab['time'] = range(0,10)  # integration time
+        self._lab['time'] = range(0,11)    # integration time
         self._lab['N'] = 5000              # network size
         self._lab['k_max'] = 30            # maximum degree
         self._lab['kmean'] = 10            # mean degree
@@ -42,7 +42,7 @@ class addition_deletionTest(unittest.TestCase):
         self._repetitions = 1              # repetitions at each point in the parameter space
     
     def testDegreeDist( self ):
-        ''''Test an non-zero degree distribution for 
+        ''''Test for a non-zero degree distribution for 
         steady-state network dynamics.'''
         # instance class
         e = addition_deletion()
