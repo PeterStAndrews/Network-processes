@@ -31,7 +31,7 @@ class addition_deletionTest(unittest.TestCase):
         self._lab = epyc.Lab()
         
         # initialise the experimental parameters
-        self._lab['time'] = range(0,1000)  # integration time
+        self._lab['time'] = range(0,10)  # integration time
         self._lab['N'] = 5000              # network size
         self._lab['k_max'] = 30            # maximum degree
         self._lab['kmean'] = 10            # mean degree
@@ -52,5 +52,5 @@ class addition_deletionTest(unittest.TestCase):
         rc = (self._lab.results())[0]
         
         # perform tests
-        self.assertTrue(rc[epyc.Experiment.RESULTS]['sol'] > 0)
+        self.assertTrue(sum(rc[epyc.Experiment.RESULTS]['sol']) > 0)
 
