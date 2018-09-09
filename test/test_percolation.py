@@ -28,7 +28,7 @@ class PercolationTest(unittest.TestCase):
 
 	def setUp( self ):
 		'''Set up the parameters.'''
-		# set lab test parameters
+		# set lab and test parameters
 		self._lab = epyc.Lab()
 
 		self._lab[PERCOLATION.T] = [0.6, 0.9]
@@ -49,3 +49,5 @@ class PercolationTest(unittest.TestCase):
 		# perform tests
 		self.assertTrue(rc[epyc.Experiment.RESULTS]['occupied_fraction'] > 0)
 		
+
+
