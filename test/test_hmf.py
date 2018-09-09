@@ -27,7 +27,7 @@ class HMFTest(unittest.TestCase):
 	def setUp( self ):
 		return pass 
 	
-	testhmf( self ):
+	def testhmf( self ):
 		raise Exception('Not implemented yet! (test hmf)')
 
 
