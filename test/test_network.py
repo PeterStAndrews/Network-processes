@@ -21,16 +21,61 @@
 from network_processes import *
 import unittest
 
-class NetworkTest(unittest.TestCase):
-	'''Tests for `NETWORK` class in `network.py`. ```
-
-
-	
-
-
-
-
-
-
-
-
+class sample_experiment0( NETWORK ):
+    '''A sample experiment that subclasses `NETWORK` and tests its 
+    methods return expected results.'''
+    
+    def __init__(self):
+        super(sample_experiment0, self).__init__()
+        
+    def do( self, params ):
+        '''Executes methods in `NETWORK` and returns them as results.
+        :param params: experimental parameters'''
+        # dict to store results 
+        rc = dict()
+        
+        # grab a copy of the network
+        g = self._network
+        
+        # compute the degree distribution
+        Pk = self.degree_distribution(g)
+        
+        # compute the average degree
+        ave_k = self.average_degree(Pk)
+        
+        rc['Pk'] = Pk
+        rc['ave_k'] = ave_k
+        
+        return rc
+        
+        
+class NetworkTest( unittest.TestCase ):
+    '''Test class for `NETWORK` class in `network.py`.'''
+    
+    def test_NETWORK( self ):
+        '''Test methods in `NETWORK` return expected results.'''
+        # set up epyc lab
+        self._lab = epyc.Lab()
+        
+        # initialise parameters
+        self._lab[NETWORK.N] = 5000
+        self._lab[NETWORK.AVERAGE_K] = 5
+        
+        # repetitions at each point in the parameter space
+        self._repetitions = 1
+        
+        # instance experiment class, run the experiment and extract results
+        e = sample_experiment0()
+        self._lab.runExperiment(epyc.RepeatedExperiment(e, self._repetitions))
+        rc = (self._lab.results())[0]
+        
+        # assert non-zero degree distribution
+        self.assertTrue(sum(rc[epyc.Experiment.RESULTS]['Pk'].values()) > 0)
+        
+        # assert computed average degree is within +-1.0 of parameter `AVERAGE_K`
+        comp = rc[epyc.Experiment.RESULTS]['ave_k'] 
+        self.assertTrue(4 <= comp and comp <= 6)
+        
+        # assertTrue that network order is less than or equal to `N`
+        # assertTrue that network has no degree-zero nodes 
+        
