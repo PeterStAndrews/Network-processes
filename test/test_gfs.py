@@ -28,7 +28,7 @@ class GFsTest(unittest.TestCase):
 
 	def setUp( self ):
 		'''Set up the parameters.'''
-		# set lab test parameters
+		# set lab and test parameters
 		self._lab = epyc.Lab()
 
 		self._lab[GFs.T] = [0.6, 0.9]
@@ -48,3 +48,5 @@ class GFsTest(unittest.TestCase):
 		rc = (self._lab.results())[0]
 		# perform tests
 		self.assertTrue(rc[epyc.Experiment.RESULTS]['S1'] > 0)
+
+
