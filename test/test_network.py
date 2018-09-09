@@ -20,6 +20,7 @@
 
 from network_processes import *
 import unittest
+import networkx
 
 class sample_experiment0( NETWORK ):
     '''A sample experiment that subclasses `NETWORK` and tests its 
@@ -45,6 +46,7 @@ class sample_experiment0( NETWORK ):
         
         rc['Pk'] = Pk
         rc['ave_k'] = ave_k
+        rc['network'] = g
         
         return rc
         
@@ -52,7 +54,7 @@ class sample_experiment0( NETWORK ):
 class NetworkTest( unittest.TestCase ):
     '''Test class for `NETWORK` class in `network.py`.'''
     
-    def test_NETWORK( self ):
+    def testNETWORK( self ):
         '''Test methods in `NETWORK` return expected results.'''
         # set up epyc lab
         self._lab = epyc.Lab()
@@ -77,5 +79,8 @@ class NetworkTest( unittest.TestCase ):
         self.assertTrue(4 <= comp and comp <= 6)
         
         # assertTrue that network order is less than or equal to `N`
+        self.assertTrue(len(rc[epyc.Experiment.RESULTS]['network']) <= self._lab[NETWORK.N])
+        
         # assertTrue that network has no degree-zero nodes 
+        self.assertFalse(networkx.isolates(rc[epyc.Experiment.RESULTS]['network']))
         
